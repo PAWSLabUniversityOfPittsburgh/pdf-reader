@@ -13,6 +13,8 @@ const htmlToElements = (html: string) => {
   return temp.firstChild as HTMLElement;
 }
 
+const HELPER_ANNOTATOR_API = 'https://helper.ngrok.luozm.me';
+
 export class HelperAnnotator {
 
   private registry: any;
@@ -70,11 +72,11 @@ export class HelperAnnotator {
 
     const search = href.split('?', 2)[1];
     const params = new URLSearchParams(search);
-    const annotId = params.get('helperid');
-    const index = parseInt(params.get('helpersection') || '0');
+    const annotId = params.get('helper-annot-id');
+    const index = parseInt(params.get('helper-annot-sect-num') || '1') - 1;
 
     this.registry.get('http')
-      .get(`https://ovariancancerhelper2.tk/articles/${annotId}`)
+      .get(`${HELPER_ANNOTATOR_API}/articles/${annotId}`)
       .subscribe({
         next: (annot: any) => {
           this.annotation = annot;
@@ -142,8 +144,8 @@ export class HelperAnnotator {
 
     const http = this.registry.get('http');
     const method = this.annotated
-      ? http.patch(`https://ovariancancerhelper2.tk/articles/${annot.id}`, annot)
-      : http.post('https://ovariancancerhelper2.tk/articles', annot);
+      ? http.patch(`${HELPER_ANNOTATOR_API}/articles/${annot.id}`, annot)
+      : http.post(`${HELPER_ANNOTATOR_API}/articles`, annot);
     method.subscribe({
       next: (res) => {
         this.annotated = true;
@@ -399,7 +401,7 @@ export class HelperAnnotator {
     const pdfDocId = this.registry.get('pdfDocId');
     const pdfDocIdHash = this.registry.get('sha256')(pdfDocId);
     this.registry.get('http')
-      .get(`https://ovariancancerhelper2.tk/articles/${pdfDocIdHash}`)
+      .get(`${HELPER_ANNOTATOR_API}/articles/${pdfDocIdHash}`)
       .subscribe({
         next: (annot: any) => {
           this.annotated = true;
